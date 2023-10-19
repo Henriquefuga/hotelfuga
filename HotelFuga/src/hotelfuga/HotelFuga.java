@@ -1,10 +1,14 @@
 
 package hotelfuga;
 
+import javax.swing.JFrame;
+
 public class HotelFuga {
 
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        JFrame homeScreen = new JFrame("Home Screen");
+        homeScreen.setVisible(true);
     }
     
 }
