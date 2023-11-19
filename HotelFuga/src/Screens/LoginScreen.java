@@ -4,10 +4,12 @@
  */
 package Screens;
 
+import database.DataBase;
 import entities.Manager;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import java.sql.ResultSet;
 
 /**
  *
@@ -149,15 +151,14 @@ public class LoginScreen extends javax.swing.JFrame {
     private void enterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enterButtonActionPerformed
         // TODO add your handling code here:]
         
+        DataBase db = new DataBase();
         Manager manager = new Manager();
-        String user = userField.getText();
-        String teste = manager.getUser();
-        System.out.println("" + user + " " + manager.getUser());
-        if(user.equals(teste)){
+        manager.setUser(userField.getText());
+        manager.setPassword(passwordField.getText());       
+        if(db.login(manager.getUser(), manager.getPassword())){
             HomeScreen homescreen = new HomeScreen();
             homescreen.setVisible(true);
         }
-        
         
     }//GEN-LAST:event_enterButtonActionPerformed
 

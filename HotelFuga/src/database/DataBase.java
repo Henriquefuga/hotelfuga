@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class DataBase {
     
@@ -67,5 +68,30 @@ public class DataBase {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocorreu um erro (função register):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } 
+    }
+    
+    public boolean login(String user, String password){
+        try {           
+            if (connection == null || connection.isClosed()) {
+                connect();
+            }
+            
+            String query = "SELECT * FROM manager WHERE user = ? AND password = ?";
+            
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {                 
+                preparedStatement.setString(1, user);
+                preparedStatement.setString(2, password);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+                
+                return resultSet.next();
+                }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro no banco de dados (função register):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro (função register):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } 
+        return false;
     }
 }
