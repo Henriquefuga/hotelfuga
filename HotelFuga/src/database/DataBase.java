@@ -21,7 +21,7 @@ public class DataBase {
             // Configurando os parâmetros de conexão
             String url = "jdbc:mysql://localhost:3306/hotel";
             String usuario = "root";
-            String senha = "";
+            String senha = "hH@6212955";
 
             // Estabelecendo a conexão
             connection = DriverManager.getConnection(url, usuario, senha);
@@ -70,6 +70,88 @@ public class DataBase {
         } 
     }
     
+    public void registerPet(String namePet, String race, String dateInput, String dateOutput, String allergic) {
+        try {           
+            if (connection == null || connection.isClosed()) {
+                connect();
+            }
+            
+            String query = "INSERT INTO pet (race, namePet, dateInput, dateOutput, allergic) VALUES ('" + race + "', '" + namePet + "', '" + dateInput + "', '" + dateOutput + "', '" + allergic + "')";
+            
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {                 
+
+                    // Execute a instrução de inserção
+                    int linhasAfetadas = preparedStatement.executeUpdate();
+
+                    if (linhasAfetadas > 0) {
+                        System.out.println("Inserção realizada com sucesso!");
+                    } else {
+                        System.out.println("Falha ao inserir dados.");
+                    }
+                }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro no banco de dados (função register pet):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro (função register pet):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } 
+    }
+    
+    
+    public void registerTutor(String cpfTutor, String nameTutor, String pet, String telephoneTutor, String emergencyTelephoneTutor, String cep, String address, String numberAddress) {
+        try {           
+            if (connection == null || connection.isClosed()) {
+                connect();
+            }
+            
+            String query = "INSERT INTO tutor (cpfTutor, nameTutor, pet, telephoneTutor, emergencyTelephone, cep, address, numberAddress) VALUES ('" + cpfTutor + "', '" + nameTutor + "', '" + pet + "', '" + telephoneTutor + "', '" + emergencyTelephoneTutor + "', '" + cep + "', '" + address + "', '" + numberAddress + "')";
+            
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {                 
+
+                    // Execute a instrução de inserção
+                    int linhasAfetadas = preparedStatement.executeUpdate();
+
+                    if (linhasAfetadas > 0) {
+                        System.out.println("Inserção realizada com sucesso!");
+                    } else {
+                        System.out.println("Falha ao inserir dados.");
+                    }
+                }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro no banco de dados (função register pet):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro (função register pet):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } 
+    }
+    
+    public void payment(String cpfTutor, String nameTutor, String pet, String telephoneTutor, String emergencyTelephoneTutor, String cep, String address, String numberAddress) {
+        try {           
+            if (connection == null || connection.isClosed()) {
+                connect();
+            }
+            
+            String query = "INSERT INTO tutor (cpfTutor, nameTutor, pet, telephoneTutor, emergencyTelephone, cep, address, numberAddress) VALUES ('" + cpfTutor + "', '" + nameTutor + "', '" + pet + "', '" + telephoneTutor + "', '" + emergencyTelephoneTutor + "', '" + cep + "', '" + address + "', '" + numberAddress + "')";
+            
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {                 
+
+                    // Execute a instrução de inserção
+                    int linhasAfetadas = preparedStatement.executeUpdate();
+
+                    if (linhasAfetadas > 0) {
+                        System.out.println("Inserção realizada com sucesso!");
+                    } else {
+                        System.out.println("Falha ao inserir dados.");
+                    }
+                }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro no banco de dados (função register pet):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro (função register pet):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } 
+    }
+    
     public boolean login(String user, String password){
         try {           
             if (connection == null || connection.isClosed()) {
@@ -92,6 +174,9 @@ public class DataBase {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocorreu um erro (função register):\n" + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } 
+        
+        
         return false;
     }
+    
 }

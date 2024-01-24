@@ -6,6 +6,9 @@ package Screens;
 
 import database.DataBase;
 import entities.Manager;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -48,6 +51,7 @@ public class RegisterScreen extends javax.swing.JFrame {
         passwordField = new javax.swing.JTextField();
         telephoneField = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
+        invalidLabel = new javax.swing.JLabel();
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo_hotel.png"))); // NOI18N
 
@@ -110,6 +114,7 @@ public class RegisterScreen extends javax.swing.JFrame {
             }
         });
 
+        telephoneField.setToolTipText("(XX) XXXXX-XXXX");
         telephoneField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 telephoneFieldActionPerformed(evt);
@@ -117,6 +122,10 @@ public class RegisterScreen extends javax.swing.JFrame {
         });
 
         jLabel15.setText("Telefone ");
+        jLabel15.setToolTipText("(XX) XXXXX-XXXX");
+
+        invalidLabel.setText("Inválido");
+        invalidLabel.setToolTipText("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -136,11 +145,15 @@ public class RegisterScreen extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
-                            .addComponent(jLabel8)
-                            .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10)
                             .addComponent(cpfField, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jLabel8)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(invalidLabel))
+                                .addComponent(emailField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,7 +178,8 @@ public class RegisterScreen extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel5)
+                    .addComponent(invalidLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -228,7 +242,86 @@ public class RegisterScreen extends javax.swing.JFrame {
         manager.setCpf(cpfField.getText());
         manager.setTelephone(telephoneField.getText());
         DataBase db = new DataBase();
+        
+        
+        //check email
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            Pattern pattern = Pattern.compile(emailRegex);
+            Matcher matcher = pattern.matcher(manager.getEmail());
+
+            if (matcher.matches()) {
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Email em formato inválido\n" );
+            }
+        
+        //check cpf
+            // Remove todos os caracteres não numéricos
+            String cpfFormatado = manager.getCpf().replaceAll("[^0-9]", "");
+
+            // Verifica se o CPF tem 11 dígitos
+            if (cpfFormatado.length() != 11) {
+                System.out.println("O CPF NÃO está no formato correto.");
+                return;
+            }
+
+            // Verifica se todos os caracteres são iguais
+            if (cpfFormatado.matches("(\\d)\\1{10}")) {
+                System.out.println("O CPF NÃO está no formato correto.");
+                return;
+            }
+
+            // Calcula o primeiro dígito verificador (D1)
+            int soma = 0;
+            for (int i = 0; i < 9; i++) {
+                soma += Character.getNumericValue(cpfFormatado.charAt(i)) * (10 - i);
+            }
+            int primeiroDigito = 11 - (soma % 11);
+            if (primeiroDigito > 9) {
+                primeiroDigito = 0;
+            }
+
+            // Calcula o segundo dígito verificador (D2)
+            soma = 0;
+            for (int i = 0; i < 10; i++) {
+                soma += Character.getNumericValue(cpfFormatado.charAt(i)) * (11 - i);
+            }
+            
+            int segundoDigito = 11 - (soma % 11);
+            if (segundoDigito > 9) {
+                segundoDigito = 0;
+            }
+
+            // Verifica se os dígitos verificadores estão corretos
+            if (Character.getNumericValue(cpfFormatado.charAt(9)) == primeiroDigito
+                    && Character.getNumericValue(cpfFormatado.charAt(10)) == segundoDigito) {
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Cpf em formato inválido\n" );
+        }
+        
+        
+        //check telephone
+            // Define o padrão para o formato (XX) XXXX-XXXX
+           
+            String telephoneFormat = "^\\(\\d{2}\\)\\s\\d{4}-\\d{4}$";
+
+            // Compila a expressão regular
+            Pattern regex = Pattern.compile(telephoneFormat);
+
+            // Cria um objeto Matcher para comparar a string fornecida com o padrão
+            Matcher matcher2 = regex.matcher(manager.getTelephone());
+            
+            if (matcher2.matches()) {
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Telefone em formato inválido\n" );
+            }
+        
         db.register(manager.getName(), manager.getEmail(), manager.getUser(),manager.getPassword(), manager.getCpf(), manager.getTelephone());
+        
+        
+        
         
     }//GEN-LAST:event_registerButtonActionPerformed
 
@@ -271,6 +364,7 @@ public class RegisterScreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField cpfField;
     private javax.swing.JTextField emailField;
+    private javax.swing.JLabel invalidLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
